@@ -1,6 +1,6 @@
-#Dummy Coffee Project
+# Dummy Coffee Project
 
-##Dummy Coffee project is my first vanilla php projects.
+## Dummy Coffee project is my first vanilla php projects.
 
 Tools and Website that i use to build this projects :
 1. (Visual Studio Code)[https://code.visualstudio.com/]
