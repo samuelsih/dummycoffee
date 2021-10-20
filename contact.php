@@ -27,7 +27,7 @@
         $(document).ready(function() {
 
             $("#contact-submit").click(function() {
-                first_name = $("#name").val();
+                name = $("#name").val();
                 email = $("#email").val();
                 message = $("#message").val();
 
@@ -36,44 +36,9 @@
                     url: "send_message.php",
                     data: "name=" + name + "&email=" + email + "&message=" + message,
                     
-                    success: function(html) {
-
-                        if(html == 'true') {
-                            $("#add_err2").html('<div class="alert alert-success"><strong>Message</strong> sent</div>');
-                            window.location.href = "contact.php";
-                        }
-
-                        else if(html == 'name_long') {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Name</strong> must not exceed 50 characters.</div>');
-                        }
-
-                        else if(html == 'name_short') {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Name</strong> must exceed 5 characters.</div>');
-                        }
-
-                        else if(html == 'email_long') {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Email</strong> must not exceed 50 characters</div>');
-                        }
-
-                        else if(html == 'email_short') {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Email</strong> must exceed 15 characters.</div>');
-                        }
-
-                        else if(html == 'email_format') {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Email</strong> is not valid.</div>');
-                        }
-
-                        else if(html == 'message_long') {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Message</strong> must not exceed 100 characters.</div>');
-                        }
-
-                        else if(html == 'message_short') {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Message</strong> must exceed 5 characters.</div>');
-                        }
-
-                        else {
-                            $("#add_err2").html('<div class="alert alert-danger"><strong>Error</strong> Please try again.</div>');
-                        }
+                    success: function(html){
+                            $("#add_err2").html('<div class="alert alert-success"><strong>Message</strong> sent.</div>');
+                        
                     },
                     
                     beforeSend: function () {
@@ -144,18 +109,18 @@
 
                             <div class="form-group ">
                                 <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" name="name">
+                                <input type="text" class="form-control" id="name" name="name" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="email">Email Address</label>
-                                <input type="email" class="form-control" id="email" name="email">
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
 
                             <div class="clearfix"></div>
                             <div class="form-group">
                                 <label for="message">Message</label>
-                                <textarea class="form-control" rows="6" maxlength="100" id="message" name="message"></textarea>
+                                <textarea class="form-control" rows="6" maxlength="100" id="message" required name="message"></textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-default" id="contact-submit">Submit</button>

@@ -1,27 +1,21 @@
 <?php
 
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-$mysqli = new mysqli('localhost', 'root', '', 'dummycoffee');
+//Load Composer's autoloader
+require 'vendor/autoload.php';
 
-if($mysqli->connect_error) {
-    die('Error : (' . $mysqli->connect_errno . ')' . $mysqli->connect_error);
-}
 
 //dapatkan isi dari contact.php
-//jangan lupa prevent sql injection
-$name = mysqli_real_escape_string($mysqli, $_POST['name']);
-$email = mysql_real_escape_string($mysqli, $_POST['email']);
-$message = mysql_real_escape_string($mysqli, $_POST['message']);
+$name = $_POST['name'];
+$email = $_POST['email'];
+$message = $_POST['message'];
 
 
-//real email section
-//masukkan email sebagai yang ingin dijadikan subjek pengiriman
-$real_email = 'samsihotang02@gmail.com';
-$subject = "Email from Dummy Coffee User.";
-
-
-
-//validation section
 if(strlen($name) < 5) {
     echo 'name_short';
 }
@@ -50,43 +44,41 @@ else if(strlen($message) < 5) {
     echo 'message_short';
 }
 
-
-//jika lolos validasi, masuk ke PHPMailer
 else {
-    require 'phpmailer/src/PHPMailer.php';
+    //Create an instance; passing `true` enables exceptions
+    $mail = new PHPMailer(true);
 
-    $mail = new PHPMailer();
+    try {
+        //Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                   //Enable verbose debug output
+        $mail->isSMTP();                                            //Send using SMTP
+        $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+        $mail->Username   = 'samuelhotang02@gmail.com';  // SMTP Username
+        //sorry tapi password nya dihapus hehe
+        $mail->Password   = '';                               //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
+        $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
-    $mail->isSMTP(); //set mailer untuk memakai SMTP
-    $mail->Host = 'smtp.gmail.com'; //specify main dan backup smtp server nya
-    $mail->SMTPAuth = true; //enable SMTP authentication
+        //Recipients
+        $mail->setFrom($email, $name);
+        $mail->addAddress('samsihotang02@gmail.com', 'Testing123');     //Add a recipient
 
-    //Harus menggunakan gmail suite
-    //Tidak memberikan nilai pada username dan password, karena berbahaya
 
-    $mail->Username = ''; //SMTP Username
-    $mail->Password = ''; //SMTP Password
-    $mail->SMTPSecure = 'tls'; //untuk menyalakan enkripsi. Sekarang pakai tls (ssl juga boleh)
-    $mail->Port = 587; //port
+        //Content
+        $mail->isHTML(true);                                  //Set email format to HTML
+        $mail->Subject = "Dummy Coffe got a message from $name";
+        $mail->Body    = "<p>" . $message . "</p>";
 
-    $mail->addReplyTo($email);
-    $mail->From = $real_email;
-    $mail->FromName = $name;
-    $mail->addAddress('', 'Admin'); //recipient
+        $mail->send();
+        echo 'true';
 
-    $mail->isHTML(true); //set email format nya HTML boi
-
-    $mail->Subject = $subject;
-    $mail->Body = $message;
-    $mail->AltBody = 'Ini body dalam bentuk plain text untuk non-HTML mail clients';
-
-    if(!$mail->send()) {
-        echo 'Message could not be sent';
-        echo 'Mailer error: ' . $mail->ErrorInfo;
+    }       
+    
+    catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
-
-    else echo 'true';
-
 }
 
 ?>
+
